@@ -1,26 +1,30 @@
 "use strict";
 
+const LETTER_CARDINALITY = 26;
+const DIGIT_CARDINALITY = 10;
+const SYMBOL_CARDINALITY = 32;
+const POSSIBLITY_SPACE = LETTER_CARDINALITY*2 + DIGIT_CARDINALITY + SYMBOL_CARDINALITY;
 
-function hasUpper(password) {
+
+function hasUppercase(password) {
     "use strict";
 
     return (/[A-Z]/.test(password));
 }
 
-function hasLower(password) {
+function hasLowercase(password) {
     "use strict";
 
     return (/[a-z]/.test(password));
 }
 
-function hasNumber(password) {
+function hasDigit(password) {
     "use strict";
 
     return (/[0-9]/.test(password));
 }
 
 function hasSymbol(password) {
-
     //return (/[!-\/:-@\[-`{-~]/.test(password));
     return (/[!@#$%^&*()_+=[\]{};':"\\|,.<>/?~`\-]/.test(password));
 }
@@ -34,17 +38,17 @@ function calculateComplexity(password) {
     // Can update with additional language characters, 
     // special characters (e.g., ©, ™, °),
     // and emojis 🚀
-    if (hasUpper(password)) {
-        complexity += 26;
+    if (hasUppercase(password)) {
+        complexity += LETTER_CARDINALITY;
     }
-    if (hasLower(password)) {
-        complexity += 26;
+    if (hasLowercase(password)) {
+        complexity += LETTER_CARDINALITY;
     }
-    if (hasNumber(password)) {
-        complexity += 10;
+    if (hasDigit(password)) {
+        complexity += DIGIT_CARDINALITY;
     }
     if (hasSymbol(password)) {
-        complexity += 32;
+        complexity += SYMBOL_CARDINALITY;
     }
     return complexity;
 }
@@ -72,6 +76,26 @@ function calculateComplexitySimple(password) {
         max: regExps.length * password.length
     };
 }
+
+
+function calculateComplexityUpdated(password) {
+    const lengthWeight = 2;
+    const characterSetWeight = 4;
+    let complexity = password.length * lengthWeight;
+
+    const characterSetSize = (hasLowercase ? 1 : 0) +
+                             (hasUppercase ? 1 : 0) +
+                             (hasDigit ? 1 : 0) +
+                             (hasSymbol ? 1 : 0);
+
+    complexity += characterSetSize * characterSetWeight;
+
+    return {
+        value: complexity,
+        max: POSSIBLITY_SPACE
+    };
+}
+
 
 function checkPasswordStregth(complexity) {
     var progress = $('#passwordComplexity');
@@ -122,10 +146,29 @@ function formatNumber(num, threshold) {
 }
 
 
+function changeTheme(selectedOption) {
+    $('link[rel="stylesheet"]').each(function() {
+        var href = $(this).attr('href');
+        if (href.startsWith('css')) {
+            $(this).attr('href', `css/${selectedOption}`);
+        }
+    });
+}
+
+
 $(document).ready(function () {
     $('#password').on('keyup', function () {
-        let complexity = calculateComplexity($('#password').val());
+        let password = $('#password').val();
+        let complexity = calculateComplexity(password);
         updateCombinations(complexity);
-        checkPasswordStregth(complexity);
+
+        var complexity2 = calculateComplexityUpdated(password)
+        checkPasswordStregth(complexity2);
+    });
+
+    $('#select-theme').change(function() {
+        var selectedOption = $(this).val();
+        console.log("Selected option: " + selectedOption);
+        changeTheme(selectedOption);
     });
 });

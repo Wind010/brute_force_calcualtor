@@ -2,16 +2,48 @@
 
 <head>
     <link rel="stylesheet" href="css/main.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
         integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous">
         </script>
 
+
     <script src="js/main.js"></script>
+    <script src="js/textScroll.js"></script>
 
 <body>
+    <nav class="nav-bar">
+        <div class="icon-nav">
+            <i class="fa-solid fa-calculator"></i>
+            <span>Password Brute Force Calculator</span>
+        </div>
+
+        <ul class="list-nav-bar active">
+            <li class="list-item"><a href="">PBFC</a></li>
+            <li class="list-item"><a href="https://wind010.hashnode.dev/" target="_blank" rel="noopener noreferrer"><i
+                        class="fa-brands fa-hashnode"></i></a></li>
+            <li class="list-item"><a href="https://github.com/Wind010" target="_blank" rel="noopener noreferrer"><i
+                        class="fa-brands fa-github"></i></a></li>
+            <li class="list-item">
+                <select id="select-theme" class="select-theme">
+                    <option value="">Default</option>
+                    <option value="main.css">🐱‍💻Hacker</option>
+                    <option value="lcars.css">🖖 LCARS</option>
+                    <option value="matrix.css"> 👩‍💻 Matrix</option>
+                </select>
+            </li>
+        </ul>
+
+
+    </nav>
+
 
     <div class="text-center">
-        <h1>Password Brute Force Calculator</h1>
+        <h1 id="loading">Password Brute Force Calculator</h1>
     </div>
 
     <div class="passwordContainer">
@@ -21,34 +53,18 @@
         <input type="input" id="password" placeholder="Password">
         <progress id="passwordComplexity" value="0"></progress>
 
-        <div class="divTable">
-            <div class="divTableBody">
-                <div class="divTableRow">
-                    <div class="divTableCell">Possible Combinations</div>
-                    <div class="divTableCell"</div>
-                </div>
-                <div class="divTableRow">
-                    <div class="divTableCell">&nbsp;</div>
-                    <div class="divTableCell">&nbsp;</div>
-                </div>
-                <div class="divTableRow">
-                    <div class="divTableCell">&nbsp;</div>
-                    <div class="divTableCell">&nbsp;</div>
-                </div>
-                <div class="divTableRow">
-                    <div class="divTableCell">&nbsp;</div>
-                    <div class="divTableCell">&nbsp;</div>
-                </div>
-            </div>
-        </div>
-
-        <h2>Possible Combinations</h2></h2><h2 id="possibleCombos">Possible Combinations</h2>
+        <h2>Possible Combinations</h2>
+        </h2>
+        <h2 id="possibleCombos">Possible Combinations</h2>
         <h2 id="possibleCombosScientific"></h2>
         <h2 id="complexity">Complexity</h2>
         <h2 id="length"></h2>
 
         <h2 id="average"> </h2>
+
     </div>
+
+
 </body>
 
 </html>
