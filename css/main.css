@@ -1,0 +1,71 @@
+/* @font-face {
+    font-family: 'Antonio';
+    font-weight: 400;
+    src: url('Antonio-Regular.woff2') format('woff2'), url('Antonio-Regular.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Antonio';
+    font-weight: 700;
+    src: url('Antonio-Bold.woff2') format('woff2'), url('Antonio-Bold.woff') format('woff')
+}
+*/
+
+body {
+    padding-block: 5px;background-color: #1f1c21;
+    font-family: 'Antonio', 'Arial Narrow', 'Avenir Next Condensed', sans-serif;
+    font-weight: 400;
+    line-height: 1.5;
+    /* color: rgb(19, 22, 122); */
+    color: #c95343;
+} 
+
+.text-center {
+    max-width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    align-items: center;
+}
+
+.passwordContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 200px;
+    margin: 0 auto;
+}
+
+.passwordContainer input {
+    flex-basis: 100%;
+    margin: 10px 0;
+    background-color: rgb(35, 38, 40);
+    color: #c7f;
+    font-family: 'Arial', sans-serif;
+    border-radius: 5px;
+}
+
+progress {
+    /*flex-basis: 100%;*/
+    height: 20px;
+}
+
+
+h2 {
+    font-family: 'Source Code Pro', Inconsolata, Monaco, Consolas, 'Courier New', Courier, sans-serif;
+    font-size: 2.5em;
+    color: #1e1d1a;
+    letter-spacing: .1em;
+    text-shadow: -1px -1px 1px #C44545, 2px 2px 1px #ED5353;
+  }
+  
+.listArea{
+    padding-top: 5px;
+}
+
+footer {
+    padding: 15px 5px 5px 5px;
+    text-align: center;
+    border-top: 2px solid black;
+    margin-top: 35px;
+}
