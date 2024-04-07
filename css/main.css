@@ -57,7 +57,7 @@
 
 body {
     background: #111;
-    color: #411;
+    color:  #f00;
     font-family: Consolas, Courier, monospace;
     font-size: 20px;
     text-shadow: 0 0 15px #411;
@@ -70,6 +70,10 @@ body {
     align-items: center;
     justify-content: center;
     background-color: rgb(36, 36, 36);
+}
+
+.unlit {
+    color: #411;
 }
 
 .glow {

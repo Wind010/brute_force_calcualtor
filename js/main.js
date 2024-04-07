@@ -65,7 +65,7 @@ function calculateComplexitySimple(password) {
         /[!-//:-@[-`{-ÿ]/
     ];
 
-    regExps.forEach(function (regexp) {
+    regExps.forEach((regexp) => {
         if (regexp.test(password)) {
             complexity++;
         }
