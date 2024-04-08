@@ -9,11 +9,17 @@
         integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
     <link rel="stylesheet" href="css/main.css">
 
     <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
         integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous">
         </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"
+        integrity="sha512-6FaAxxHuKuzaGHWnV00ftWqP3luSBRSopnNAA2RvQH1fOfnF/A1wOfiUWF7cLIOFcfb1dEhXwo5VG3DAisocRw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.min.js"
         integrity="sha512-Eak/29OTpb36LLo2r47IpVzPBLXnAMPAVypbSZiZ4Qkf8p/7S/XRG5xp7OKWPPYfJT6metI+IORkR5G8F900+g=="
@@ -61,6 +67,10 @@
                     <progress id="passwordComplexity" value="Hashes Per Second"></progress>
                 </div>
 
+                <div class="form-group">
+                    <button id="reset" class="btn btn-dark">Reset</button>
+                </div>
+
                 <div class="form-group my-3">
                     <label for="guessesPerSecond" class="">
                         Gueses per second:
@@ -72,18 +82,25 @@
                         <option value="2021">2021</option>
                         <option value="2020">2020</option>
                     </select>
-                    <select name="hashesPerSecond" id="select-hash">
-                        <optgroup label="Miscellaneous">
-                            <option value="1000000" >1 million per second</option>
-                            <option value="100000000" >100 million per second</option>
-                            <option value="1000000000" >1 billion per second</option>
+                    <select name="hashes" id="select-hash">
+                        <option value="-" selected>-</option>
+                        <optgroup label="Preset">
+                            <option value="1000000">1 million per second</option>
+                            <option value="100000000">100 million per second</option>
+                            <option value="1000000000">1 billion per second</option>
+                            <option value="1000000000000">1 trillion per second</option>
+                            <option value="1000000000000000">1 quadrillion per second</option>
                         </optgroup>
-                        <option value="MD5">MD5</option>
-                        <option value="SHA1">SHA1</option>
-                        <option value="SHA256">SHA256</option>
-                        <option value="SHA515">SHA515</option>
+                        <optgroup label="Hash Types">
+                            <option value="MD5">MD5</option>
+                            <option value="SHA1">SHA1</option>
+                            <option value="SHA256">SHA256</option>
+                            <option value="SHA515">SHA515</option>
+                        </optgroup>
+
                     </select>
-                    <input type="number" id="guesePerSecond" placeholder="0">
+                    <input id="guessesPerSecond" type="number" min="0" step="1000000.0" placeholder="0"
+                        onkeypress="return event.charCode >= 48">
                 </div>
         </div>
         </form>
@@ -94,34 +111,124 @@
             <div class="row">
                 <div class="col-lg-3 stats">
                     <i class="fa fa-solid fa-dice-d20" aria-hidden="true"></i>
-                    <div class="counting" data-count="900000">0</div>
-                    <h5 id="possibleCombos">Possible Combinations</h5>
+                    <div id="possibleCombos" class="counting" data-count="900000">0</div>
+                    <h5>Possible Combinations = \(complexity^{length} \)
+                    </h5>
                 </div>
 
                 <div class="col-lg-3 stats">
-                    <i class="fa fa-check" aria-hidden="true"></i>
-                    <div class="counting" data-count="280">0</div>
-                    <h5 id="possibleCombosScientific"></h5>
+                    <i class="fa fa-flask" aria-hidden="true"></i>
+                    <div id="possibleCombosScientific" class="counting" data-count="280">0</div>
+                    <h5>Possible Combinations in Scientific Notation</h5>
+                </div>
+
+                <div class="col-lg-3 stats">
+                    <i class="fa fa-solid fa-dice-one" aria-hidden="true"></i>
+                    <div id="possibleSetCombination" class="counting" data-count="999">0</div>
+                    <h5>Possible Combinations with Password Characters and No Repeats
+                        \[
+                        2^{length}
+                        \]
+                    </h5>
+                </div>
+
+                <div class="col-lg-3 stats">
+                    <i class="fa fa-solid fa-dice" aria-hidden="true"></i>
+                    <div id="possibleSetCombinationRepeat" class="counting" data-count="999">0</div>
+                    <h5>
+                        Possible Combinations with Password Characters and Repeats
+                        \[
+                        (n +k-1)^{k}
+                        \]
+                        Where n are unique characters, k is password length.
+                    </h5>
                 </div>
 
                 <div class="col-lg-3 stats">
                     <i class="fa fa-user" aria-hidden="true"></i>
-                    <div class="counting" data-count="75">0</div>
-                    <h5 id="complexity">Complexity</h5>
+                    <div id="complexity" class="counting" data-count="75">0</div>
+                    <h5>Character Cardinality (Complexity)</h5>
                 </div>
 
                 <div class="col-lg-3 stats">
                     <i class="fa fa-solid fa-ruler" aria-hidden="true"></i>
-                    <div class="counting" data-count="999">0</div>
-                    <h5 id="length"></h5>
+                    <div id="length" class="counting" data-count="999">0</div>
+                    <h5>Length</h5>
+                </div>
+
+                <div class="col-lg-3 stats">
+                    <i class="fa fa-solid fa-arrow-down-a-z" aria-hidden="true"></i>
+                    <div id="lowerLetters" class="counting" data-count="999">0</div>
+                    <h5>Lowercase Letters</h5>
+                </div>
+
+                <div class="col-lg-3 stats">
+                    <i class="fa fa-solid fa-A" aria-hidden="true"></i>
+                    <i class="fa fa-solid fa-B" aria-hidden="true"></i>
+                    <i class="fa fa-solid fa-C" aria-hidden="true"></i>
+                    <div id="upperLetters" class="counting" data-count="999">0</div>
+                    <h5>Uppercase Letters</h5>
+                </div>
+
+                <div class="col-lg-3 stats">
+                    <i class="fa fa-solid fa-1" aria-hidden="true"></i>
+                    <i class="fa fa-solid fa-2" aria-hidden="true"></i>
+                    <i class="fa fa-solid fa-3" aria-hidden="true"></i>
+                    <div id="digits" class="counting" data-count="999">0</div>
+                    <h5>Digits</h5>
+                </div>
+
+                <div class="col-lg-3 stats">
+                    <i class="fa fa-regular fa-at" aria-hidden="true"></i>
+                    <i class="fa fa-solid fa-hashtag" aria-hidden="true"></i>
+                    <i class="fa fa-solid fa-exclamation" aria-hidden="true"></i>
+                    <div id="symbols" class="counting" data-count="999">0</div>
+                    <h5>Symbols</h5>
                 </div>
 
                 <div class="col-lg-3 stats">
                     <i class="fa fa-solid fa-hourglass" aria-hidden="true"></i>
-                    <div class="counting" data-count="999">0</div>
-                    <h5 id="average">Average (x̄)</h5>
+                    <div id="maxInSeconds" class="counting" data-count="999">0</div>
+                    <h5>Maximum (in seconds)</h5>
+                </div>
+
+                <div class="col-lg-3 stats">
+                    <i class="fa fa-solid fa-unlock" aria-hidden="true"></i>
+                    <div id="averageInSeconds" class="counting" data-count="999">0</div>
+                    <h5>Average (x̄) in seconds</h5>
+                </div>
+
+                <div class="col-lg-3 stats">
+                    <i class="fa fa-regular fa-calendar-days" aria-hidden="true"></i>
+                    <div id="maxInDays" class="counting" data-count="999">0</div>
+                    <h5>Maximum (in days)</h5>
+                </div>
+
+                <div class="col-lg-3 stats">
+                    <i class="fa fa-solid fa-unlock" aria-hidden="true"></i>
+                    <div id="averageInDays" class="counting" data-count="999">0</div>
+                    <h5>Average (x̄) in days</h5>
+                </div>
+
+                <div class="col-lg-3 stats">
+                    <i class="fa fa-regular fa-calendar-days" aria-hidden="true"></i>
+                    <div id="maxInYears" class="counting" data-count="999">0</div>
+                    <h5>Maximum (in years)</h5>
+                </div>
+
+                <div class="col-lg-3 stats">
+                    <i class="fa fa-solid fa-unlock" aria-hidden="true"></i>
+                    <div id="averageInYears" class="counting" data-count="999">0</div>
+                    <h5>Average (x̄) in years</h5>
                 </div>
             </div>
+
+            <p>Test inline equation:  \( E = mc^2 \).</p>
+    
+            <p>Equation:</p>
+            \[
+            \int_{a}^{b} f(x) \, dx = F(b) - F(a)
+            \]
             <!-- end row -->
         </div>
         <!-- end container -->

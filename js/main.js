@@ -31,8 +31,6 @@ function hasSymbol(password) {
 
 
 function calculateComplexity(password) {
-    "use strict";
-
     var complexity = 0;
 
     // Can update with additional language characters, 
@@ -50,8 +48,11 @@ function calculateComplexity(password) {
     if (hasSymbol(password)) {
         complexity += SYMBOL_CARDINALITY;
     }
+
     return complexity;
 }
+
+
 
 function calculateComplexitySimple(password) {
     var complexity = 0;
@@ -83,10 +84,10 @@ function calculateComplexityUpdated(password) {
     const characterSetWeight = 4;
     let complexity = password.length * lengthWeight;
 
-    const characterSetSize = (hasLowercase ? 1 : 0) +
-                             (hasUppercase ? 1 : 0) +
-                             (hasDigit ? 1 : 0) +
-                             (hasSymbol ? 1 : 0);
+    const characterSetSize = (hasLowercase(password) ? 1 : 0) +
+                             (hasUppercase(password) ? 1 : 0) +
+                             (hasDigit(password) ? 1 : 0) +
+                             (hasSymbol(password) ? 1 : 0);
 
     complexity += characterSetSize * characterSetWeight;
 
@@ -116,16 +117,85 @@ function calculateCombinations(str) {
     return numCombinations;
 }
 
-function updateCombinations(complexity) {
+
+function calculateComplexityWithCount(str) {
+    let complexity = 0;
+    let lowerLetterCount = 0; 
+    let upperLetterCount = 0; 
+    let digitCount = 0;
+    let symbolCount = 0;
+
+    for (let i = 0; i < str.length; i++) {
+        if (hasLowercase(str[i])) {
+            lowerLetterCount++;
+        }
+        if (hasUppercase(str[i])) {
+            upperLetterCount++;
+        }
+        if (hasDigit(str[i])) {
+            digitCount++;
+        }
+        if (hasSymbol(str[i])) {
+            symbolCount++;
+        }
+    }
+
+    if (lowerLetterCount) {
+        complexity += LETTER_CARDINALITY;
+    }
+    if (upperLetterCount) {
+        complexity += LETTER_CARDINALITY;
+    }
+    if (digitCount) {
+        complexity += DIGIT_CARDINALITY;
+    }
+    if (symbolCount) {
+        complexity += SYMBOL_CARDINALITY;
+    }
+
+    return {
+        lower: lowerLetterCount,
+        upper: upperLetterCount,
+        digit: digitCount,
+        symbol: symbolCount,
+        complexity: complexity
+    };
+}
+
+function updateCombinations(passwordDetails) {
+    const secondsPerDay = 86400;
+    const daysPerYear = 365;  // approx
     var password = document.getElementById('password').value;
-    var possibleCombinations = calculateCombinations(password);
-    var possibleCombinations = Math.pow(complexity, password.length);
+    //var possibleCombinations = calculateCombinations(password);
+    var possibleCombinations = Math.pow(passwordDetails.complexity, password.length);
+
+    var guesesPerSecond = document.getElementById('guessesPerSecond').value;
 
     document.getElementById('possibleCombos').textContent = possibleCombinations;
-    document.getElementById('possibleCombosScientific').textContent = formatNumber(possibleCombinations, 100000);
-    document.getElementById('complexity').textContent = complexity;
+    document.getElementById('possibleCombosScientific').textContent = formatNumber(possibleCombinations, 1000);
+
+    document.getElementById('possibleSetCombination').textContent = Math.pow(2, password.length);
+    document.getElementById('possibleSetCombinationRepeat').textContent = 
+        Math.pow((new Set(password).size + password.length - 1), password.length);
+
+    document.getElementById('complexity').textContent = passwordDetails.complexity;
     document.getElementById('length').textContent = password.length;
-    document.getElementById('average').textContent = possibleCombinations / 2;
+
+    document.getElementById('lowerLetters').textContent = passwordDetails.lower;
+    document.getElementById('upperLetters').textContent = passwordDetails.upper;
+    document.getElementById('digits').textContent = passwordDetails.digit;
+    document.getElementById('symbols').textContent = passwordDetails.symbol;
+
+    document.getElementById('maxInSeconds').textContent = formatNumber(possibleCombinations / guesesPerSecond);
+    document.getElementById('averageInSeconds').textContent = formatNumber(possibleCombinations / guesesPerSecond) / 2;
+    document.getElementById('maxInDays').textContent = 
+        formatNumber(possibleCombinations / (guesesPerSecond * secondsPerDay));
+    document.getElementById('averageInDays').textContent = 
+        formatNumber(possibleCombinations / (guesesPerSecond * secondsPerDay)) / 2;
+    document.getElementById('maxInYears').textContent = 
+        formatNumber(possibleCombinations / (guesesPerSecond * secondsPerDay * daysPerYear));
+    document.getElementById('averageInYears').textContent = 
+        formatNumber(possibleCombinations / (guesesPerSecond * secondsPerDay * daysPerYear)) / 2;
 }
 
 
@@ -156,14 +226,32 @@ function changeTheme(selectedOption) {
 }
 
 
-$(document).ready(function () {
-    $('#password').on('keyup', function () {
-        let password = $('#password').val();
-        let complexity = calculateComplexity(password);
-        updateCombinations(complexity);
+function updateStatistics()
+{
+    let password = $('#password').val();
+    //let complexity = calculateComplexity(password);
+    let complexity = calculateComplexityWithCount(password);
+    updateCombinations(complexity);
 
-        var complexity2 = calculateComplexityUpdated(password)
-        checkPasswordStregth(complexity2);
+    // TODO:  Base the progress bar on selected guesses per second.
+    var complexity2 = calculateComplexityUpdated(password)
+    checkPasswordStregth(complexity2);
+}
+
+
+$(document).ready(function () {
+    $('#reset').on('click', function () {
+        $('#password').val('')
+    });
+
+    $('#password, #guessesPerSecond').on('keyup', function () {
+        updateStatistics();
+    });
+
+    $(document).on('change', '#select-hash', function() {
+        var selectedValue = $(this).val();
+        $('#guessesPerSecond').val(selectedValue);
+        updateStatistics();
     });
 
     $('#select-theme').change(function() {

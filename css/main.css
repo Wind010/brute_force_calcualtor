@@ -26,7 +26,7 @@
 }
 
 .nav-bar .icon-nav {
-    color: white;
+    color: #f00;
 }
 
 .list-nav-bar {
@@ -40,7 +40,7 @@
     cursor: pointer;
     font-size: 1.25rem;
     text-decoration: none;
-    color: #fff;
+    color: #f00;
     text-align: center;
     margin-left: 0.5rem;
     letter-spacing: 0.1rem;
@@ -125,6 +125,7 @@ input {
 
 progress {
     padding: 4px;
+    height: 15px;
     background: rgba(0, 0, 0, 0.15);
     border-radius: 6px;
     -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25), 0 1px rgba(255, 255, 255, 0.08);
@@ -134,7 +135,16 @@ progress {
 progress::-webkit-progress-value {
     background: #f00;
 }
-  
+ 
+
+select {
+    flex-basis: 100%;
+    margin: 0px 0;
+    background-color: rgb(35, 38, 40);
+    color: #089a9a;
+    border-radius: 5px;
+}
+
 
 h2 {
     font-family: 'Source Code Pro', Inconsolata, Monaco, Consolas, 'Courier New', Courier, sans-serif;
@@ -153,14 +163,15 @@ h2 {
 section#counter-stats {
 	display: flex;
 	justify-content: center;
-	margin-top: 100px;
+	margin: 100px 0 0 0;
 }
 
 .stats {
     text-align: center;
+    margin: 0 0 100px 0;
     font-size: 35px;
     font-weight: 700;
-    font-family: 'Montserrat', sans-serif;
+    /* font-family: 'Montserrat', sans-serif; */
 }
   
 .stats .fa {
